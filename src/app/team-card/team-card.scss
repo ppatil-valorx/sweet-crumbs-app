@@ -1,0 +1,39 @@
+.team-card {
+  border: 1px solid #ded2c3;
+  border-radius: 12px;
+  padding: 18px;
+  background: #fffdf9;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.team-card.selected {
+  border: 2px solid #9b5d32;
+  background: #fff0d8;
+}
+
+.name {
+  color: #6f3d24;
+  margin-top: 0;
+}
+
+.job-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #f3e4d5;
+  font-size: 12px;
+}
+
+button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #8b5133;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #6f3d24;
+}
