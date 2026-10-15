@@ -12,13 +12,14 @@ import {
 import { TeamMember } from '../team-member';
 import { CardShell } from '../card-shell/card-shell';
 import { NgTemplateOutlet } from '@angular/common';
-
+import { ViewEncapsulation } from '@angular/core';
 @Component({
   selector: 'app-team-card',
   standalone: true,
   templateUrl: './team-card.html',
   styleUrl: './team-card.scss',
   imports: [CardShell, NgTemplateOutlet],
+  encapsulation: ViewEncapsulation.Emulated,
 })
 export class TeamCard implements OnInit, OnChanges {
 

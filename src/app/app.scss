@@ -49,6 +49,10 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+.name {
+  color: blue;
+  border-bottom: 2px solid blue;
+}
 
 @media (max-width: 900px) {
   .team-grid {
