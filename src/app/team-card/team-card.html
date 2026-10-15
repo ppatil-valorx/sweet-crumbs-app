@@ -1,39 +1,53 @@
-<div
-  class="team-card"
-  [class.selected]="isSelected"
-  (click)="selectCard()"
->
-  <h2 class="name">{{ person.name }}</h2>
 
+<app-card-shell>
+  <div card-header>
+    <h2 class="name">{{ person.name }}</h2>
 
-@switch (person.job) {
-  @case ('Founder and Sales Head') {
-    <span class="job-badge">Founder</span>
-  }
-  @case ('Sales Rep') {
-    <span class="job-badge">Sales</span>
-  }
-  @case ('Customer Support') {
-    <span class="job-badge">Support</span>
-  }
-  @default {
-    <span class="job-badge">Team</span>
-  }
-}
+    @switch (person.job) {
+      @case ('Founder and Sales Head') {
+        <span class="job-badge">Founder</span>
+      }
+      @case ('Sales Rep') {
+        <span class="job-badge">Sales</span>
+      }
+      @case ('Customer Support') {
+        <span class="job-badge">Support</span>
+      }
+      @default {
+        <span class="job-badge">Team</span>
+      }
+    }
+  </div>
 
+  <div card-body>
+    <ng-template #detailRow let-label="label" let-value="value">
+      <p><strong>{{ label }}:</strong> {{ value }}</p>
+    </ng-template>
 
-  <p>
-    <strong>Job:</strong> {{ person.job }}
-  </p>
+    <ng-container
+      [ngTemplateOutlet]="detailRow"
+      [ngTemplateOutletContext]="{
+        label: 'Job',
+        value: person.job
+      }"
+    ></ng-container>
 
-  <p>
-    <strong>Covers:</strong> {{ person.covers }}
-  </p>
+    <ng-container
+      [ngTemplateOutlet]="detailRow"
+      [ngTemplateOutletContext]="{
+        label: 'Covers',
+        value: person.covers
+      }"
+    ></ng-container>
 
-  <button
-    type="button"
-    (click)="markFavorite($event)"
-  >
-    {{ isFavorite ? 'Favorited' : 'Mark as favorite' }}
-  </button>
-</div>
+    @if (isSelected) {
+      <p class="selected-message">Currently selected</p>
+    }
+  </div>
+
+  <div card-footer>
+    <button type="button" (click)="markFavorite($event)">
+      {{ isFavorite ? 'Favorited' : 'Mark as favorite' }}
+    </button>
+  </div>
+</app-card-shell>

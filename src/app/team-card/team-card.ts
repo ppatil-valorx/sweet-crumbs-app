@@ -10,12 +10,15 @@ import {
 } from '@angular/core';
 
 import { TeamMember } from '../team-member';
+import { CardShell } from '../card-shell/card-shell';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-team-card',
   standalone: true,
   templateUrl: './team-card.html',
-  styleUrl: './team-card.scss'
+  styleUrl: './team-card.scss',
+  imports: [CardShell, NgTemplateOutlet],
 })
 export class TeamCard implements OnInit, OnChanges {
 

@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { TeamCard } from './team-card/team-card';
 import { TeamMember } from './team-member';
 import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-root',
   standalone: true,
