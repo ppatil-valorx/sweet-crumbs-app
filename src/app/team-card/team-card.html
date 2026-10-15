@@ -5,7 +5,22 @@
 >
   <h2 class="name">{{ person.name }}</h2>
 
-  <span class="job-badge">{{ person.job }}</span>
+
+@switch (person.job) {
+  @case ('Founder and Sales Head') {
+    <span class="job-badge">Founder</span>
+  }
+  @case ('Sales Rep') {
+    <span class="job-badge">Sales</span>
+  }
+  @case ('Customer Support') {
+    <span class="job-badge">Support</span>
+  }
+  @default {
+    <span class="job-badge">Team</span>
+  }
+}
+
 
   <p>
     <strong>Job:</strong> {{ person.job }}

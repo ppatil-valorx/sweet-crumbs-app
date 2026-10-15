@@ -112,4 +112,19 @@ changeJob(): void {
   this.message = '';
 }
 
+searchTerm = '';
+
+get filteredTeam(): TeamMember[] {
+  const query = this.searchTerm.trim().toLowerCase();
+
+  return this.team.filter(member =>
+    member.name.toLowerCase().includes(query)
+  );
+}
+
+onSearch(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  this.searchTerm = input.value;
+}
+
 }
