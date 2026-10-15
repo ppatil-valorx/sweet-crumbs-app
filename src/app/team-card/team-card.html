@@ -1,5 +1,8 @@
 
-<app-card-shell>
+<app-card-shell
+  [highlightColor]="person.job === 'Customer Support' ? '#d9f0ff' : '#fff3cd'"
+  (click)="selectCard()"
+>
   <div card-header>
     <h2 class="name">{{ person.name }}</h2>
 

@@ -47,3 +47,6 @@ button {
 button:hover {
   background: #6f3d24;
 }
+:host(.app-highlighted) .card-shell {
+  background-color: var(--highlight-color, #fff3cd);
+}

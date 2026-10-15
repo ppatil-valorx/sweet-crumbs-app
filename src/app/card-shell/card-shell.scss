@@ -1,8 +1,10 @@
 
-:host {
-  display: block;
-  min-width: 0;
+
+.card-shell.app-highlighted {
+  background-color: var(--highlight-color, #fff3cd);
+  transition: background-color 0.2s ease;
 }
+
 
 .card-shell {
   width: 100%;
