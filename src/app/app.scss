@@ -1,0 +1,51 @@
+
+.page {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #3e3027;
+}
+
+h1 {
+  color: #70452e;
+}
+.error-message {
+  color: #c62828;
+  font-size: 16px;
+  margin-top: 12px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.actions button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #8b5133;
+  color: white;
+  cursor: pointer;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+@media (max-width: 900px) {
+  .team-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+}
