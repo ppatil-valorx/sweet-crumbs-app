@@ -2,11 +2,11 @@
 import { Component } from '@angular/core';
 import { TeamCard } from './team-card/team-card';
 import { TeamMember } from './team-member';
-
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TeamCard],
+  imports: [CommonModule, TeamCard],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -112,6 +112,9 @@ changeJob(): void {
   this.message = '';
 }
 
+trackByMemberId(index: number, member: TeamMember): number {
+  return member.id;
+}
 searchTerm = '';
 
 get filteredTeam(): TeamMember[] {
