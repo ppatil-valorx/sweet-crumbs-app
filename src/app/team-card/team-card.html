@@ -15,6 +15,10 @@
     <strong>Covers:</strong> {{ person.covers }}
   </p>
 
+  // Component-level provider: each card's injector creates its own instance.
+// Root-level provider: all cards share the root injector's instance.
+  <p>Clicks: {{ clicks.count }}</p>
+
   <button
     type="button"
     (click)="markFavorite($event)"

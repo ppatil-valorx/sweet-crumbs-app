@@ -11,12 +11,14 @@ import {
 } from '@angular/core';
 import { ActivityLogService } from '../services/activity-log';
 import { TeamMember } from '../team-member';
+import { CardClicksService } from '../services/card-clicks';
 
 @Component({
   selector: 'app-team-card',
   standalone: true,
   templateUrl: './team-card.html',
-  styleUrl: './team-card.scss'
+  styleUrl: './team-card.scss',
+  providers: [CardClicksService],
 })
 export class TeamCard implements OnInit, OnChanges {
 
@@ -27,6 +29,7 @@ export class TeamCard implements OnInit, OnChanges {
   @Output() favorite = new EventEmitter<TeamMember>();
   @Output() selected = new EventEmitter<TeamMember>();
 
+  clicks = inject(CardClicksService);
   ngOnInit(): void {
     console.log('Team card initialized:', this.person.name);
   }
@@ -40,6 +43,7 @@ export class TeamCard implements OnInit, OnChanges {
   }
 activityLog = inject(ActivityLogService);
   selectCard(): void {
+    this.clicks.increment();
     this.selected.emit(this.person);
   }
 
