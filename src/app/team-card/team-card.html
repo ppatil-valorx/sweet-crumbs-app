@@ -1,28 +1,58 @@
-<div
-  class="team-card"
-  [class.selected]="isSelected"
+
+<app-card-shell
+  [highlightColor]="person.job === 'Customer Support' ? '#d9f0ff' : '#fff3cd'"
   (click)="selectCard()"
 >
-  <h2 class="name">{{ person.name }}</h2>
+  <div card-header>
+    <h2 class="name">{{ person.name }}</h2>
 
-  <span class="job-badge">{{ person.job }}</span>
+    @switch (person.job) {
+      @case ('Founder and Sales Head') {
+        <span class="job-badge">Founder</span>
+      }
+      @case ('Sales Rep') {
+        <span class="job-badge">Sales</span>
+      }
+      @case ('Customer Support') {
+        <span class="job-badge">Support</span>
+      }
+      @default {
+        <span class="job-badge">Team</span>
+      }
+    }
+  </div>
 
-  <p>
-    <strong>Job:</strong> {{ person.job }}
-  </p>
+  <div card-body>
+    <ng-template #detailRow let-label="label" let-value="value">
+      <p><strong>{{ label }}:</strong> {{ value }}</p>
+    </ng-template>
 
-  <p>
-    <strong>Covers:</strong> {{ person.covers }}
-  </p>
+    <ng-container
+      [ngTemplateOutlet]="detailRow"
+      [ngTemplateOutletContext]="{
+        label: 'Job',
+        value: person.job
+      }"
+    ></ng-container>
 
-  // Component-level provider: each card's injector creates its own instance.
-// Root-level provider: all cards share the root injector's instance.
-  <p>Clicks: {{ clicks.count }}</p>
+    <ng-container
+      [ngTemplateOutlet]="detailRow"
+      [ngTemplateOutletContext]="{
+        label: 'Covers',
+        value: person.covers
+      }"
+    ></ng-container>
 
-  <button
-    type="button"
-    (click)="markFavorite($event)"
-  >
-    {{ isFavorite ? 'Favorited' : 'Mark as favorite' }}
-  </button>
-</div>
+    @if (isSelected) {
+      <p class="selected-message">Currently selected</p>
+    }
+
+    <p>Clicks: {{ clicks.count }}</p>
+  </div>
+
+  <div card-footer>
+    <button type="button" (click)="markFavorite($event)">
+      {{ isFavorite ? 'Favorited' : 'Mark as favorite' }}
+    </button>
+  </div>
+</app-card-shell>
