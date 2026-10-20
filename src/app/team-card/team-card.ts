@@ -6,9 +6,10 @@ import {
   EventEmitter,
   OnInit,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  inject
 } from '@angular/core';
-
+import { ActivityLogService } from '../services/activity-log';
 import { TeamMember } from '../team-member';
 
 @Component({
@@ -37,13 +38,14 @@ export class TeamCard implements OnInit, OnChanges {
       changes
     );
   }
-
+activityLog = inject(ActivityLogService);
   selectCard(): void {
     this.selected.emit(this.person);
   }
 
   markFavorite(event: MouseEvent): void {
     event.stopPropagation();
+      this.activityLog.add(`Favorite chosen: ${this.person.name}`);
     this.favorite.emit(this.person);
   }
 }

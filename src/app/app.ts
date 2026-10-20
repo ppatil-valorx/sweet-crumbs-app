@@ -1,7 +1,10 @@
 
-import { Component } from '@angular/core';
+import { Component,inject } from '@angular/core';
 import { TeamCard } from './team-card/team-card';
 import { TeamMember } from './team-member';
+//import { inject } from '@angular/core';
+import { ActivityLogService } from './services/activity-log';
+
 
 @Component({
   selector: 'app-root',
@@ -37,7 +40,7 @@ export class App {
       covers: 'Complaints from both towns'
     }
   ];
-
+activityLog = inject(ActivityLogService);
   selectedId: number | null = null;
   favoriteId: number | null = null;
  message = '';
@@ -49,16 +52,19 @@ export class App {
     return this.team.find(member => member.id === this.favoriteId);
   }
 
- selectMember(member: TeamMember): void {
-  this.selectedId = member.id;
-  this.message = '';
-}
+
 
   setFavorite(member: TeamMember): void {
     this.favoriteId = member.id;
   }
 
-  
+  selectMember(member: TeamMember): void {
+  this.selectedId = member.id;
+  this.message = '';
+
+  this.activityLog.add(`Card selected: ${member.name}`);
+}
+
 changeName(): void {
   
   if (this.selectedId === null) {
@@ -82,7 +88,7 @@ changeName(): void {
 
     return member;
   });
-
+this.activityLog.add(`Name updated: ${this.selectedMember?.name}`);
   this.message = '';
 }
 
@@ -105,10 +111,12 @@ changeJob(): void {
         job: newJob.trim()
       };
     }
-
+    
     return member;
   });
-
+this.activityLog.add(
+  `Job updated: ${this.selectedMember?.name} — ${this.selectedMember?.job}`
+);
   this.message = '';
 }
 
