@@ -54,4 +54,346 @@
     <p>No activity yet. Select a card or choose a favorite.</p>
   }
 </section>
+```html
+<section class="orders-section">
+  <div class="orders-header">
+    <div>
+      <p class="section-eyebrow">SWEET CRUMBS BAKERY</p>
+      <h2>Order Desk <span class="orders-emoji">🧁</span></h2>
+      <p class="orders-subtitle">Every cake, every detail, in one place.</p>
+    </div>
+
+    <div class="orders-count">
+      <span class="count-number">{{ orders.length }}</span>
+      <span class="count-label">Total Orders</span>
+    </div>
+  </div>
+
+  <div class="orders-table-wrapper">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>ORDER</th>
+          <th>CUSTOMER</th>
+          <th>FLAVOUR</th>
+          <th>SIZE</th>
+          <th>DELIVERY DATE</th>
+          <th>TOWN</th>
+          <th>STATUS</th>
+          <th class="price-column">PRICE</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (order of orders; track order.orderNumber) {
+          <tr [class.big-order-row]="order.bigOrder">
+            <td>
+              <span class="order-number">
+                {{ order.orderNumber }}
+              </span>
+            </td>
+
+            <td>
+              <span class="customer-name">
+                {{ order.accountName }}
+              </span>
+              @if (order.bigOrder) {
+                <span class="big-order-badge">★ BIG ORDER</span>
+              }
+            </td>
+
+            <td>
+              <span class="flavour-name">{{ order.flavour }}</span>
+            </td>
+
+            <td>
+              <span class="size-value">{{ order.sizeKg }} kg</span>
+            </td>
+
+            <td>
+              <span class="delivery-date">{{ order.deliveryDate }}</span>
+            </td>
+
+            <td>
+              <span class="town-label">{{ order.deliveryTown }}</span>
+            </td>
+
+            <td>
+              <span
+                class="status-badge"
+                [class.status-new]="order.status === 'New'"
+                [class.status-baking]="order.status === 'Baking'"
+                [class.status-delivery]="order.status === 'Out for Delivery'"
+                [class.status-delivered]="order.status === 'Delivered'"
+                [class.status-cancelled]="order.status === 'Cancelled'"
+              >
+                <span class="status-dot"></span>
+                {{ order.status }}
+              </span>
+            </td>
+
+            <td class="price-column">
+              @if (order.price !== undefined) {
+                <span class="price-value">
+                  ₹{{ order.price.toLocaleString('en-IN') }}
+                </span>
+              } @else {
+                <span class="price-pending">Not set</span>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="empty-orders">
+              <span class="empty-icon">🍰</span>
+              <p>No orders yet</p>
+              <span>Your new orders will appear here.</span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="orders-footer">
+    <span>🍰 Freshly organised, just like our cakes.</span>
+    <span>Showing {{ orders.length }} orders</span>
+  </div>
+</section>
+
+
+<section class="enquiry-section">
+  <h2>Customer enquiry</h2>
+  <p>Have a question? Send us a message.</p>
+
+  <form #enquiryForm="ngForm" (ngSubmit)="submitEnquiry(enquiryForm)">
+
+    <div class="form-field">
+      <label for="enquiryName">Name</label>
+      <input
+        id="enquiryName"
+        type="text"
+        name="name"
+        [(ngModel)]="enquiry.name"
+        #nameField="ngModel"
+        required
+        minlength="3"
+      />
+
+      @if (nameField.touched && nameField.invalid) {
+        <p class="field-error">
+          @if (nameField.errors?.['required']) {
+            Name is required.
+          }
+          @if (nameField.errors?.['minlength']) {
+            Name must contain at least 3 characters.
+          }
+        </p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="enquiryEmail">Email</label>
+      <input
+        id="enquiryEmail"
+        type="email"
+        name="email"
+        [(ngModel)]="enquiry.email"
+        #emailField="ngModel"
+        required
+        email
+      />
+
+      @if (emailField.touched && emailField.invalid) {
+        <p class="field-error">
+          Please enter a valid email address.
+        </p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="enquiryMessage">Message</label>
+      <textarea
+        id="enquiryMessage"
+        name="message"
+        [(ngModel)]="enquiry.message"
+        #messageField="ngModel"
+        required
+        maxlength="200"
+        rows="4"
+      ></textarea>
+
+      <p class="character-count">
+        {{ enquiry.message.length }}/200 characters
+      </p>
+
+      @if (messageField.touched && messageField.invalid) {
+        <p class="field-error">
+          @if (messageField.errors?.['required']) {
+            Message is required.
+          }
+          @if (messageField.errors?.['maxlength']) {
+            Message cannot exceed 200 characters.
+          }
+        </p>
+      }
+    </div>
+
+    <button type="submit" [disabled]="enquiryForm.invalid">
+      Send
+    </button>
+  </form>
+
+  @if (enquiryThankYou) {
+    <p class="success-message">
+      Thank you! Your enquiry has been received.
+    </p>
+  }
+</section>
+
+
+<section class="order-form-section">
+  <h2>New order</h2>
+
+  <form [formGroup]="orderForm" (ngSubmit)="submitOrder()">
+    <div class="form-field">
+      <label for="accountName">Customer / account name *</label>
+      <input
+        id="accountName"
+        type="text"
+        formControlName="accountName"
+        required
+      />
+      @if (getOrderFieldError('accountName')) {
+  <p class="field-error">
+    {{ getOrderFieldError('accountName') }}
+  </p>
+}
+    </div>
+
+    <div class="form-field">
+      <label for="flavour">Flavour *</label>
+      <select id="flavour" formControlName="flavour">
+        @for (flavour of flavours; track flavour) {
+          <option [value]="flavour">{{ flavour }}</option>
+        }
+      </select>
+      @if (getOrderFieldError('flavour')) {
+  <p class="field-error">
+    {{ getOrderFieldError('flavour') }}
+  </p>
+}
+    </div>
+
+    <div class="form-field">
+      <label for="sizeKg">Size (kg) *</label>
+      <input
+        id="sizeKg"
+        type="number"
+        formControlName="sizeKg"
+        [min]="config.minSizeKg"
+        [max]="config.maxSizeKg"
+        step="0.5"
+      />
+      @if (getSizeError()) {
+  <p class="field-error">
+    {{ getSizeError() }}
+  </p>
+}
+
+      @if (isBigOrder) {
+        <p class="big-order-hint">
+          This is a big order. Confirm the details with the customer.
+        </p>
+      }
+
+      @if (orderForm.get('sizeKg')?.touched &&
+           orderForm.get('sizeKg')?.invalid) {
+        <p class="field-error">
+          Enter a size between {{ config.minSizeKg }} and
+          {{ config.maxSizeKg }} kg.
+        </p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="deliveryDate">Delivery date *</label>
+      <input
+        id="deliveryDate"
+        type="date"
+        formControlName="deliveryDate"
+      />
+      
+@if (orderForm.get('deliveryDate')?.touched &&
+     orderForm.get('deliveryDate')?.hasError('pastDate')) {
+  <p class="field-error">
+    Delivery date can’t be in the past.
+  </p>
+}
+
+      @if (getOrderFieldError('deliveryDate')) {
+  <p class="field-error">
+    {{ getOrderFieldError('deliveryDate') }}
+  </p>
+}
+    </div>
+
+    <div class="form-field">
+      <label for="deliveryTown">Delivery town *</label>
+      <select id="deliveryTown" formControlName="deliveryTown">
+        @for (town of towns; track town) {
+          <option [value]="town">{{ town }}</option>
+        }
+      </select>
+      @if (getOrderFieldError('deliveryTown')) {
+  <p class="field-error">
+    {{ getOrderFieldError('deliveryTown') }}
+  </p>
+}
+    </div>
+
+    <div class="form-field">
+      <label for="status">Status</label>
+      <select id="status" formControlName="status">
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ status }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="price">Price</label>
+      <input
+        id="price"
+        type="number"
+        formControlName="price"
+        min="0"
+        step="0.01"
+      />
+      
+
+@if (
+  (orderForm.get('status')?.touched ||
+   orderForm.get('price')?.touched ||
+   orderForm.touched) &&
+  orderForm.hasError('priceRequired')
+) {
+  <p class="field-error">
+    Add the price before marking an order Delivered.
+  </p>
+}
+
+
+    </div>
+
+    <button type="submit">
+  Add order
+</button>
+  </form>
+
+  @if (orderThankYou) {
+    <p class="success-message">{{ orderThankYou }}</p>
+  }
+</section>
+
 </main>

@@ -8,14 +8,16 @@ import {
   OnChanges,
   SimpleChanges
 } from '@angular/core';
-
+import { CardClicksService } from '../services/card-clicks';
+import { inject } from '@angular/core';
 import { TeamMember } from '../team-member';
 
 @Component({
   selector: 'app-team-card',
   standalone: true,
   templateUrl: './team-card.html',
-  styleUrl: './team-card.scss'
+  styleUrl: './team-card.scss',
+    providers: [CardClicksService]
 })
 export class TeamCardComponent implements OnInit, OnChanges {
 
@@ -25,7 +27,7 @@ export class TeamCardComponent implements OnInit, OnChanges {
 
   @Output() favorite = new EventEmitter<TeamMember>();
   @Output() selected = new EventEmitter<TeamMember>();
-
+clicks = inject(CardClicksService);
   ngOnInit(): void {
     console.log('Team card initialized:', this.person.name);
   }
