@@ -6,16 +6,22 @@ import {
   EventEmitter,
   OnInit,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { TeamMember } from '../team-member';
-
+import { CardShell } from '../card-shell/card-shell';
+import { NgTemplateOutlet } from '@angular/common';
+import { ViewEncapsulation } from '@angular/core';
 @Component({
   selector: 'app-team-card',
   standalone: true,
   templateUrl: './team-card.html',
-  styleUrl: './team-card.scss'
+  styleUrl: './team-card.scss',
+  imports: [CardShell, NgTemplateOutlet],
+  encapsulation: ViewEncapsulation.Emulated,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamCard implements OnInit, OnChanges {
 

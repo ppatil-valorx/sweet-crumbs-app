@@ -31,11 +31,27 @@ h1 {
   cursor: pointer;
 }
 
+
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 24px;
+  align-items: stretch;
+  margin-top: 32px;
+}
+
+.team-grid app-team-card {
+  display: block;
+  min-width: 0;
+}
+
+.team-grid h2 {
+  overflow-wrap: anywhere;
+}
+
+.name {
+  color: blue;
+  border-bottom: 2px solid blue;
 }
 
 @media (max-width: 900px) {

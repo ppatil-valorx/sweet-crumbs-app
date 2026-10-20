@@ -16,6 +16,16 @@
   color: #6f3d24;
   margin-top: 0;
 }
+.job-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  margin: 8px 0;
+  border-radius: 6px;
+  background-color: #f3dfcc;
+  color: #78452c;
+  font-size: 14px;
+  font-weight: 700;
+}
 
 .job-badge {
   display: inline-block;
@@ -36,4 +46,7 @@ button {
 
 button:hover {
   background: #6f3d24;
+}
+:host(.app-highlighted) .card-shell {
+  background-color: var(--highlight-color, #fff3cd);
 }

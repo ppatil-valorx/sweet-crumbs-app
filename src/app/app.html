@@ -1,44 +1,56 @@
 
 <main class="page">
-  <h1>Sweet Crumbs team</h1>
+  <h1>Sweet Crumbs Team</h1>
 
-  <p>
-    Selected: {{ selectedMember?.name ?? 'None' }}
-  </p>
+  <p>Selected: {{ selectedMember?.name ?? 'None' }}</p>
 
-  <p>
-    @if (favoriteMember) {
-      Favorite: {{ favoriteMember.name }}
-    } @else {
-      Favorite: none yet
-    }
-  </p>
+  @if (favoriteMember) {
+    <p>Favorite: {{ favoriteMember.name }}</p>
+  } @else {
+    <p>Favorite: none yet</p>
+  }
 
   <div class="actions">
-    <button type="button" (click)="changeName()">
-      Change name
-    </button>
-
-    <button type="button" (click)="changeJob()">
-      Change job
-    </button>
+    <button type="button" (click)="changeName()">Change name</button>
+    <button type="button" (click)="changeJob()">Change job</button>
   </div>
 
   @if (message) {
-  <p class="error-message">{{ message }}</p>
-}
+    <p class="error-message">{{ message }}</p>
+  } @else {
+    <ng-container></ng-container>
+  }
+
+  <label for="team-search">Search team members</label>
+  <input
+    id="team-search"
+    type="text"
+    placeholder="Search by name..."
+    [value]="searchTerm"
+    (input)="onSearch($event)"
+  />
+
+  <p>Showing {{ filteredTeam.length }} of {{ team.length }}</p>
 
   <section class="team-grid">
-    @for (member of team; track member.id) {
-      <app-team-card
-        [person]="member"
-        [isSelected]="selectedId === member.id"
-        [isFavorite]="favoriteId === member.id"
-        (selected)="selectMember($event)"
-        (favorite)="setFavorite($event)"
-      />
-    } @empty {
-      <p>No team members found.</p>
-    }
+    <!-- Track by stable member ID so Angular can reuse existing card elements. -->
+    
+<section class="team-grid">
+  <ng-container *ngIf="filteredTeam.length > 0; else noMatches">
+    <app-team-card
+      *ngFor="let member of filteredTeam; trackBy: trackByMemberId"
+      [person]="member"
+      [isSelected]="selectedId === member.id"
+      [isFavorite]="favoriteId === member.id"
+      (selected)="selectMember($event)"
+      (favorite)="setFavorite($event)"
+    />
+  </ng-container>
+
+  <ng-template #noMatches>
+    <p>No team members match.</p>
+  </ng-template>
+</section>
+
   </section>
 </main>
