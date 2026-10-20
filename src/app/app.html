@@ -53,4 +53,17 @@
 </section>
 
   </section>
+  <section class="recent-activity">
+  <h2>Recent activity</h2>
+
+  @if (activityLog.messages.length > 0) {
+    <ul>
+      @for (activity of activityLog.messages; track $index) {
+        <li>{{ activity }}</li>
+      }
+    </ul>
+  } @else {
+    <p>No activity yet. Select a card or choose a favorite.</p>
+  }
+</section>
 </main>

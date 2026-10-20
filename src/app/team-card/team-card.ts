@@ -7,30 +7,36 @@ import {
   OnInit,
   OnChanges,
   SimpleChanges,
-  ChangeDetectionStrategy
+  inject,
+  ChangeDetectionStrategy,
+  ViewEncapsulation
 } from '@angular/core';
-
+import { NgTemplateOutlet } from '@angular/common';
+import { ActivityLogService } from '../services/activity-log';
+import { CardClicksService } from '../services/card-clicks';
 import { TeamMember } from '../team-member';
 import { CardShell } from '../card-shell/card-shell';
-import { NgTemplateOutlet } from '@angular/common';
-import { ViewEncapsulation } from '@angular/core';
+
 @Component({
   selector: 'app-team-card',
   standalone: true,
+  imports: [CardShell, NgTemplateOutlet],
   templateUrl: './team-card.html',
   styleUrl: './team-card.scss',
-  imports: [CardShell, NgTemplateOutlet],
+  providers: [CardClicksService],
   encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TeamCard implements OnInit, OnChanges {
-
   @Input() person!: TeamMember;
   @Input() isSelected = false;
   @Input() isFavorite = false;
 
   @Output() favorite = new EventEmitter<TeamMember>();
   @Output() selected = new EventEmitter<TeamMember>();
+
+  clicks = inject(CardClicksService);
+  activityLog = inject(ActivityLogService);
 
   ngOnInit(): void {
     console.log('Team card initialized:', this.person.name);
@@ -45,11 +51,13 @@ export class TeamCard implements OnInit, OnChanges {
   }
 
   selectCard(): void {
+    this.clicks.increment();
     this.selected.emit(this.person);
   }
 
   markFavorite(event: MouseEvent): void {
     event.stopPropagation();
+    this.activityLog.add(`Favorite chosen: ${this.person.name}`);
     this.favorite.emit(this.person);
   }
 }
