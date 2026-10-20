@@ -1,8 +1,9 @@
 
-import { Component } from '@angular/core';
+import { Component ,inject } from '@angular/core';
 import { TeamCard } from './team-card/team-card';
 import { TeamMember } from './team-member';
 import { CommonModule } from '@angular/common';
+import { TeamService } from './services/team';
 
 @Component({
   selector: 'app-root',
@@ -12,32 +13,9 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app.scss'
 })
 export class App {
-  team: TeamMember[] = [
-    {
-      id: 1,
-      name: 'Meera Joshi',
-      job: 'Founder and Sales Head',
-      covers: 'Everything'
-    },
-    {
-      id: 2,
-      name: 'Anil Verma',
-      job: 'Sales Rep',
-      covers: 'Northfield'
-    },
-    {
-      id: 3,
-      name: 'Sara Khan',
-      job: 'Sales Rep',
-      covers: 'Southbay'
-    },
-    {
-      id: 4,
-      name: 'Ravi Nair',
-      job: 'Customer Support',
-      covers: 'Complaints from both towns'
-    }
-  ];
+ private teamService = inject(TeamService);
+
+team: TeamMember[] = this.teamService.getAll();
 
   selectedId: number | null = null;
   favoriteId: number | null = null;
@@ -73,18 +51,16 @@ changeName(): void {
     return;
   }
 
-  this.team = this.team.map(member => {
-    if (member.id === this.selectedId) {
-      return {
-        ...member,
-        name: newName.trim()
-      };
-    }
+const updatedMember: TeamMember = {
+  ...this.selectedMember!,
+  name: newName.trim()
+};
 
-    return member;
-  });
+this.teamService.update(updatedMember);
+this.team = this.teamService.getAll();
+this.message = '';
 
-  this.message = '';
+  
 }
 
 changeJob(): void {
@@ -99,18 +75,16 @@ changeJob(): void {
     return;
   }
 
-  this.team = this.team.map(member => {
-    if (member.id === this.selectedId) {
-      return {
-        ...member,
-        job: newJob.trim()
-      };
-    }
+  const updatedMember: TeamMember = {
+  ...this.selectedMember!,
+  job: newJob.trim()
+};
 
-    return member;
-  });
+this.teamService.update(updatedMember);
+this.team = this.teamService.getAll();
+this.message = '';
 
-  this.message = '';
+
 }
 
 trackByMemberId(index: number, member: TeamMember): number {
