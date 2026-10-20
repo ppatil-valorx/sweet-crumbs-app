@@ -1,0 +1,40 @@
+
+
+.card-shell.app-highlighted {
+  background-color: var(--highlight-color, #fff3cd);
+  transition: background-color 0.2s ease;
+}
+
+
+.card-shell {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 24px;
+  border: 1px solid #e4cdbb;
+  border-radius: 18px;
+  background: #fffdfa;
+  color: #49372e;
+  overflow-wrap: anywhere;
+}
+
+.card-header {
+  margin-bottom: 20px;
+}
+
+.card-body {
+  margin-bottom: 20px;
+}
+
+.card-footer {
+  border-top: 1px solid #eadbce;
+  padding-top: 16px;
+}
+
+.card-footer button {
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
