@@ -11,11 +11,11 @@ import {
 
 import { TeamMember } from '../team-member';
 import { DatePipe, CurrencyPipe, PercentPipe } from '@angular/common';
-
+import { TruncatePipe } from '../truncate-pipe';
 @Component({
   selector: 'app-team-card',
   standalone: true,
-  imports: [DatePipe, CurrencyPipe, PercentPipe],
+  imports: [DatePipe, CurrencyPipe, PercentPipe, TruncatePipe],
   templateUrl: './team-card.html',
   styleUrl: './team-card.scss'
 })
