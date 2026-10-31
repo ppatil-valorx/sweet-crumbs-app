@@ -1,4 +1,4 @@
-
+﻿
 import {
   Component,
   Input,
@@ -10,10 +10,12 @@ import {
 } from '@angular/core';
 
 import { TeamMember } from '../team-member';
+import { DatePipe, CurrencyPipe, PercentPipe } from '@angular/common';
 
 @Component({
   selector: 'app-team-card',
   standalone: true,
+  imports: [DatePipe, CurrencyPipe, PercentPipe],
   templateUrl: './team-card.html',
   styleUrl: './team-card.scss'
 })
@@ -22,7 +24,7 @@ export class TeamCardComponent implements OnInit, OnChanges {
   @Input() person!: TeamMember;
   @Input() isSelected = false;
   @Input() isFavorite = false;
-
+  @Input() dateFormat = 'dd MMM yyyy';
   @Output() favorite = new EventEmitter<TeamMember>();
   @Output() selected = new EventEmitter<TeamMember>();
 
@@ -47,3 +49,4 @@ export class TeamCardComponent implements OnInit, OnChanges {
     this.favorite.emit(this.person);
   }
 }
+

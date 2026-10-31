@@ -3,6 +3,22 @@
   <h1>Sweet Crumbs team</h1>
 
   <p>
+  <strong>Last updated:</strong>
+  {{ lastUpdated$ | async | date:'mediumTime' }}
+</p>
+
+    <div class="date-format-control">
+    <label for="dateFormat">Date style:</label>
+
+    <select id="dateFormat" [(ngModel)]="dateFormat">
+      <option value="dd MMM yyyy">Custom (15 Apr 2019)</option>
+      <option value="shortDate">Short</option>
+      <option value="mediumDate">Medium</option>
+      <option value="longDate">Long</option>
+    </select>
+  </div>
+
+  <p>
     Selected: {{ selectedMember?.name ?? 'None' }}
   </p>
 
@@ -32,6 +48,7 @@
     @for (member of team; track member.id) {
       <app-team-card
         [person]="member"
+          [dateFormat]="dateFormat"
         [isSelected]="selectedId === member.id"
         [isFavorite]="favoriteId === member.id"
         (selected)="selectMember($event)"

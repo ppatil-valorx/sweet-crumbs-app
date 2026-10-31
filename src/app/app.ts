@@ -1,40 +1,59 @@
 
 import { Component } from '@angular/core';
-import { TeamCard } from './team-card/team-card';
 import { TeamMember } from './team-member';
-
+import { FormsModule } from '@angular/forms';
+import { TeamCardComponent } from './team-card/team-card.component';
+import { interval, map } from 'rxjs';
+import { AsyncPipe, DatePipe } from '@angular/common';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TeamCard],
+  imports: [TeamCardComponent, FormsModule, DatePipe,AsyncPipe],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
+  dateFormat: string = 'dd MMM yyyy';
   team: TeamMember[] = [
     {
-      id: 1,
+       id: 1,
       name: 'Meera Joshi',
       job: 'Founder and Sales Head',
-      covers: 'Everything'
+      covers: 'Everything',
+      joinedOn: new Date('2019-04-15T00:00:00'),
+monthlyBonus: 25000.5,
+targetAchieved: 0.92,
+bio: 'Started Sweet Crumbs in 2019 and still tastes every new recipe before it reaches the shelves.',
     },
     {
       id: 2,
       name: 'Anil Verma',
       job: 'Sales Rep',
-      covers: 'Northfield'
+      covers: 'Northfield',
+      joinedOn: new Date('2022-08-01T00:00:00'),
+monthlyBonus: 12500,
+targetAchieved: 0.78,
+bio: 'Looks after every bakery and cafe in Northfield and never forgets a standing order.',
     },
     {
       id: 3,
       name: 'Sara Khan',
       job: 'Sales Rep',
-      covers: 'Southbay'
+      covers: 'Southbay',
+      joinedOn: new Date('2023-02-20T00:00:00'),
+monthlyBonus: 15750.75,
+targetAchieved: 1.05,
+bio: 'Opened the Southbay market and loves a tough negotiation over a bulk cake order.',
     },
     {
       id: 4,
       name: 'Ravi Nair',
       job: 'Customer Support',
-      covers: 'Complaints from both towns'
+      covers: 'Complaints from both towns',
+      joinedOn: new Date('2024-06-10T00:00:00'),
+monthlyBonus: 8200.25,
+targetAchieved: 0.86,
+bio: 'Turns upset customers into regulars, one resolved complaint at a time.',
     }
   ];
 
@@ -111,5 +130,9 @@ changeJob(): void {
 
   this.message = '';
 }
+
+lastUpdated$ = interval(1000).pipe(
+  map(() => new Date())
+);
 
 }
