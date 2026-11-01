@@ -7,6 +7,17 @@
   {{ lastUpdated$ | async | date:'mediumTime' }}
 </p>
 
+<div class="search-control">
+  <label for="searchTerm">Search team members:</label>
+
+  <input
+    id="searchTerm"
+    type="text"
+    [(ngModel)]="searchTerm"
+    placeholder="Search by name..."
+  />
+</div>
+
     <div class="date-format-control">
     <label for="dateFormat">Date style:</label>
 
@@ -43,9 +54,11 @@
   @if (message) {
   <p class="error-message">{{ message }}</p>
 }
-
+<button type="button" (click)="addTeamMember()">
+  Add team member
+</button>
   <section class="team-grid">
-    @for (member of team; track member.id) {
+    @for (member of team | filterByName:searchTerm; track member.id) {
       <app-team-card
         [person]="member"
           [dateFormat]="dateFormat"

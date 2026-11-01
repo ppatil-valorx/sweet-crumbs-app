@@ -5,15 +5,17 @@ import { FormsModule } from '@angular/forms';
 import { TeamCardComponent } from './team-card/team-card.component';
 import { interval, map } from 'rxjs';
 import { AsyncPipe, DatePipe } from '@angular/common';
+import { FilterByNamePipe } from './filter-by-name-pipe';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TeamCardComponent, FormsModule, DatePipe,AsyncPipe],
+  imports: [TeamCardComponent, FormsModule, DatePipe,AsyncPipe, FilterByNamePipe],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
   dateFormat: string = 'dd MMM yyyy';
+  searchTerm = '';
   team: TeamMember[] = [
     {
        id: 1,
@@ -134,5 +136,22 @@ changeJob(): void {
 lastUpdated$ = interval(1000).pipe(
   map(() => new Date())
 );
+
+
+addTeamMember(): void {
+  const newPerson: TeamMember = {
+    id: Math.max(0, ...this.team.map(member => member.id)) + 1,
+    name: 'New Team Member',
+    job: 'Sales Rep',
+    covers: 'Westfield',
+    joinedOn: new Date(),
+    monthlyBonus: 10000,
+    targetAchieved: 0.75,
+    bio: 'A new team member joining Sweet Crumbs.'
+  };
+
+  // Create a new array reference so the pure pipe detects the change.
+this.team = [...this.team, newPerson];
+}
 
 }
