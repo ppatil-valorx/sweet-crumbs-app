@@ -16,11 +16,13 @@ import { TruncatePipe } from '../truncate-pipe';
   selector: 'app-team-card',
   standalone: true,
   imports: [DatePipe, CurrencyPipe, PercentPipe, TruncatePipe],
+   providers: [DatePipe],
   templateUrl: './team-card.html',
   styleUrl: './team-card.scss'
 })
 export class TeamCardComponent implements OnInit, OnChanges {
 
+  constructor(private datePipe: DatePipe) {}
   @Input() person!: TeamMember;
   @Input() isSelected = false;
   @Input() isFavorite = false;
@@ -48,5 +50,21 @@ export class TeamCardComponent implements OnInit, OnChanges {
     event.stopPropagation();
     this.favorite.emit(this.person);
   }
+
+  async copySummary(): Promise<void> {
+  const joinedDate =
+    this.datePipe.transform(this.person.joinedOn, 'dd MMM yyyy') ?? '';
+
+  const summary =
+    `${this.person.name}, ${this.person.job}, joined ${joinedDate}`;
+
+  try {
+    await navigator.clipboard.writeText(summary);
+    alert('Summary copied to clipboard!');
+  } catch (error) {
+    console.error('Failed to copy summary:', error);
+    alert('Unable to copy summary. Please try again.');
+  }
+}
 }
 

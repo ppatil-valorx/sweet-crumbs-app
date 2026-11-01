@@ -25,4 +25,5 @@ export class TruncatePipe implements PipeTransform {
     // Truncate long text and append the trail
     return text.slice(0, limit) + trail;
   }
+  
 }
