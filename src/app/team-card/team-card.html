@@ -1,24 +1,24 @@
-<div
-  class="team-card"
-  [class.selected]="isSelected"
-  (click)="selectCard()"
->
+﻿<div class="team-card" [class.selected]="isSelected" (click)="selectCard()">
   <h2 class="name">{{ person.name }}</h2>
-
   <span class="job-badge">{{ person.job }}</span>
 
-  <p>
-    <strong>Job:</strong> {{ person.job }}
-  </p>
+  <p><strong>Job:</strong> {{ person.job }}</p>
+  <p><strong>Covers:</strong> {{ person.covers }}</p>
 
-  <p>
-    <strong>Covers:</strong> {{ person.covers }}
-  </p>
+  <div class="member-details">
+    <p><strong>Joined:</strong> {{ person.joinedOn | date: dateFormat }}</p>
+    <p><strong>Monthly bonus:</strong> {{ person.monthlyBonus | currency:'INR':'symbol':'1.2-2':'en-IN' }}</p>
+    <p><strong>Target achieved:</strong> {{ person.targetAchieved | percent:'1.0-0' }}</p>
+    <p><strong>Bio:</strong> {{ person.bio | truncate }}</p>
+  </div>
 
-  <button
-    type="button"
-    (click)="markFavorite($event)"
-  >
+  <button type="button" (click)="markFavorite($event)">
     {{ isFavorite ? 'Favorited' : 'Mark as favorite' }}
   </button>
+
+
+<button type="button" (click)="copySummary()">
+  Copy summary
+</button>
 </div>
+
