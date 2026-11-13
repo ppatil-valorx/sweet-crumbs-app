@@ -92,11 +92,16 @@ loadOrders(): void {
     )
     .subscribe({
       next: (orders) => {
-        this.orders = orders;
+       console.log('GET response:', orders);
 
-        console.log('Orders received:', this.orders.length);
+  this.orders = [...orders];
 
-        this.cdr.detectChanges();
+  console.log(
+    'SCO-0001 status in component:',
+    this.orders.find(order => order.orderNumber === 'SCO-0001')?.status
+  );
+
+  this.cdr.detectChanges();
       },
 
       error: (error) => {
@@ -106,6 +111,57 @@ loadOrders(): void {
       }
     });
 }
+
+onStatusChange(order: Order, newStatus: OrderStatus): void {
+  if (newStatus === order.status) {
+    return;
+  }
+
+  this.orderService.updateStatus(order.id, newStatus).subscribe({
+    next: (updatedOrder) => {
+      this.orders = this.orders.map(item =>
+        item.id === order.id ? updatedOrder : item
+      );
+
+      this.activityLog.add(
+        `Order ${updatedOrder.orderNumber} status changed to ${updatedOrder.status}`
+      );
+    },
+
+    error: (error) => {
+      console.error('Error updating order:', error);
+      this.ordersError = 'Unable to update order status. Please try again.';
+    }
+  });
+}
+
+deleteOrder(order: Order): void {
+  const confirmed = confirm(
+    `Are you sure you want to delete order ${order.orderNumber}?`
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  this.orderService.delete(order.id).subscribe({
+    next: () => {
+      this.orders = this.orders.filter(
+        item => item.id !== order.id
+      );
+
+      this.activityLog.add(
+        `Order ${order.orderNumber} deleted`
+      );
+    },
+
+    error: (error) => {
+      console.error('Error deleting order:', error);
+      this.ordersError = 'Unable to delete order. Please try again.';
+    }
+  });
+}
+
 
 
 onOrderSearch(event: Event): void {
@@ -328,9 +384,17 @@ onTownChange(event: Event): void {
     },
 
     error: (error) => {
-      console.error('Error creating order:', error);
-      this.orderThankYou = 'Unable to create order. Please try again.';
-    }
+  console.error('Error creating order:', error);
+
+  const validationError = error.error?.errors?.[0];
+
+  if (validationError) {
+    this.orderThankYou = validationError.message;
+  } else {
+    this.orderThankYou =
+      error.error?.message || 'Unable to create order. Please try again.';
+  }
+}
   });
 }
 

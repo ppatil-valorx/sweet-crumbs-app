@@ -134,6 +134,7 @@
             <th>TOWN</th>
             <th>STATUS</th>
             <th class="price-column">PRICE</th>
+            <th>ACTIONS</th>
           </tr>
         </thead>
 
@@ -168,18 +169,16 @@
               </td>
 
               <td>
-                <span
-                  class="status-badge"
-                  [class.status-new]="order.status === 'New'"
-                  [class.status-baking]="order.status === 'Baking'"
-                  [class.status-delivery]="order.status === 'Out for Delivery'"
-                  [class.status-delivered]="order.status === 'Delivered'"
-                  [class.status-cancelled]="order.status === 'Cancelled'"
-                >
-                  <span class="status-dot"></span>
-                  {{ order.status }}
-                </span>
-              </td>
+  <select
+    [ngModel]="order.status"
+    [ngModelOptions]="{ standalone: true }"
+    (ngModelChange)="onStatusChange(order, $event)"
+  >
+    @for (status of statuses; track status) {
+      <option [ngValue]="status">{{ status }}</option>
+    }
+  </select>
+</td>
 
               <td class="price-column">
                 @if (order.price !== undefined) {
@@ -190,10 +189,18 @@
                   <span class="price-pending">Not set</span>
                 }
               </td>
+              <td>
+  <button
+    type="button"
+    (click)="deleteOrder(order)"
+  >
+    Delete
+  </button>
+</td>
             </tr>
           } @empty {
             <tr>
-              <td colspan="8" class="empty-orders">
+              <td colspan="9" class="empty-orders">
                 <span class="empty-icon">🍰</span>
                 <p>No orders found</p>
                 <span>Try changing your search or town filter.</span>

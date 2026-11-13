@@ -48,4 +48,33 @@ export class OrderService {
     })
   });
 }
+
+updateStatus(
+  id: string,
+  status: Order['status']
+): Observable<Order> {
+
+  return this.http.patch<Order>(
+    `${this.apiUrl}/${id}`,
+    { status },
+    {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer sweetcrumbs-token'
+      })
+    }
+  );
+}
+delete(id: string): Observable<void> {
+
+  return this.http.delete<void>(
+    `${this.apiUrl}/${id}`,
+    {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer sweetcrumbs-token'
+      })
+    }
+  );
+}
+
+
 }
