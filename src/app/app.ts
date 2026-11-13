@@ -1,5 +1,10 @@
 
-import { Component, inject } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  ChangeDetectorRef
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormsModule,
@@ -9,7 +14,7 @@ import {
   Validators,
   ReactiveFormsModule
 } from '@angular/forms';
-
+import { finalize } from 'rxjs';
 import { TeamCard } from './team-card/team-card';
 import { TeamMember } from './team-member';
 import { TeamService } from './services/team';
@@ -32,9 +37,10 @@ import { priceNeededToDeliver } from './validators/price-needed-to-deliver.valid
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
+export class App implements OnInit{
   private teamService = inject(TeamService);
   private orderService = inject(OrderService);
+  private cdr = inject(ChangeDetectorRef);
   private fb = inject(FormBuilder);
 
   readonly config = inject(APP_CONFIG);
@@ -55,9 +61,64 @@ export class App {
     return this.team.find(member => member.id === this.favoriteId);
   }
 
-  get orders(): Order[] {
-    return this.orderService.getAll();
-  }
+ // Orders fetched from the backend
+orders: Order[] = [];
+
+loadingOrders = false;
+ordersError = '';
+
+//searchTerm = '';
+townFilter = '';
+
+
+ngOnInit(): void {
+  this.loadOrders();
+}
+
+loadOrders(): void {
+  this.loadingOrders = true;
+  this.ordersError = '';
+
+  this.orderService.getAll(this.searchTerm, this.townFilter)
+    .pipe(
+      finalize(() => {
+        this.loadingOrders = false;
+
+        console.log('Loading:', this.loadingOrders);
+        console.log('Final orders count:', this.orders.length);
+
+        this.cdr.detectChanges();
+      })
+    )
+    .subscribe({
+      next: (orders) => {
+        this.orders = orders;
+
+        console.log('Orders received:', this.orders.length);
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+        console.error('GET request failed:', error);
+        this.ordersError = 'Unable to load orders. Please try again.';
+        this.cdr.detectChanges();
+      }
+    });
+}
+
+
+onOrderSearch(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  this.searchTerm = input.value;
+  this.loadOrders();
+}
+
+onTownChange(event: Event): void {
+  const select = event.target as HTMLSelectElement;
+  this.townFilter = select.value;
+  this.loadOrders();
+}
 
   setFavorite(member: TeamMember): void {
     this.favoriteId = member.id;
@@ -156,6 +217,11 @@ export class App {
 
     this.enquiryThankYou = true;
 
+    console.log(form.value.name);
+      console.log(form.value.email);
+        console.log(form.value.message);
+
+
     form.resetForm({
       name: '',
       email: '',
@@ -216,42 +282,57 @@ export class App {
   }
 
   submitOrder(): void {
-    if (this.orderForm.invalid) {
-      this.orderForm.markAllAsTouched();
-      return;
-    }
-
-    const value = this.orderForm.getRawValue();
-
-    const newOrder: Omit<Order, 'orderNumber' | 'bigOrder'> = {
-      accountName: value.accountName.trim(),
-      flavour: value.flavour,
-      sizeKg: Number(value.sizeKg),
-      deliveryDate: value.deliveryDate,
-      deliveryTown: value.deliveryTown,
-      status: value.status,
-      price:
-        value.price === null || value.price === ''
-          ? undefined
-          : Number(value.price),
-      webReference: ''
-    };
-
-    const createdOrder = this.orderService.add(newOrder);
-
-    this.orderThankYou =
-      `Order ${createdOrder.orderNumber} added successfully.`;
-
-    this.orderForm.reset({
-      accountName: '',
-      flavour: 'Chocolate',
-      sizeKg: null,
-      deliveryDate: '',
-      deliveryTown: 'Northfield',
-      status: 'New',
-      price: null
-    });
+  if (this.orderForm.invalid) {
+    this.orderForm.markAllAsTouched();
+    return;
   }
+
+  const value = this.orderForm.getRawValue();
+
+  const newOrder: Omit<
+    Order,
+    'id' | 'orderNumber' | 'bigOrder' | 'webReference'
+  > = {
+    accountName: value.accountName.trim(),
+    flavour: value.flavour,
+    sizeKg: Number(value.sizeKg),
+    deliveryDate: value.deliveryDate,
+    deliveryTown: value.deliveryTown,
+    status: value.status,
+    price:
+      value.price === null || value.price === ''
+        ? undefined
+        : Number(value.price)
+  };
+
+  this.orderService.add(newOrder).subscribe({
+    next: (createdOrder) => {
+      this.orders = [...this.orders, createdOrder];
+
+      this.activityLog.add(
+        `Order ${createdOrder.orderNumber} added`
+      );
+
+      this.orderThankYou =
+        `Order ${createdOrder.orderNumber} added successfully.`;
+
+      this.orderForm.reset({
+        accountName: '',
+        flavour: 'Chocolate',
+        sizeKg: null,
+        deliveryDate: '',
+        deliveryTown: 'Northfield',
+        status: 'New',
+        price: null
+      });
+    },
+
+    error: (error) => {
+      console.error('Error creating order:', error);
+      this.orderThankYou = 'Unable to create order. Please try again.';
+    }
+  });
+}
 
   getOrderFieldError(fieldName: string): string {
     const control = this.orderForm.get(fieldName);

@@ -12,16 +12,15 @@ import {
   inject
 } from '@angular/core';
 
-import { NgTemplateOutlet } from '@angular/common';
+import { CurrencyPipe, DatePipe, PercentPipe } from '@angular/common';
 import { CardClicksService } from '../services/card-clicks';
 import { ActivityLogService } from '../services/activity-log';
 import { TeamMember } from '../team-member';
-import { CardShell } from '../card-shell/card-shell';
 
 @Component({
   selector: 'app-team-card',
   standalone: true,
-  imports: [CardShell, NgTemplateOutlet],
+  imports: [DatePipe, CurrencyPipe, PercentPipe],
   templateUrl: './team-card.html',
   styleUrl: './team-card.scss',
   providers: [CardClicksService],

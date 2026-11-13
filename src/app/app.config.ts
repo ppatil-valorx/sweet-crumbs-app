@@ -2,12 +2,13 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChang
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { APP_CONFIG } from './config/app-config';
-
+import { provideHttpClient } from '@angular/common/http';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideZoneChangeDetection({ eventCoalescing: true }),
+    provideHttpClient(),
 
     {
       provide: APP_CONFIG,

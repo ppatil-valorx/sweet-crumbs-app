@@ -14,6 +14,7 @@ export type OrderStatus =
   | 'Cancelled';
 
 export interface Order {
+    id: string;
   orderNumber: string;
   accountName: string;
   flavour: Flavour;
