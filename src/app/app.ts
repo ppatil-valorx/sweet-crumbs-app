@@ -24,7 +24,8 @@ import { Order, Flavour, Town, OrderStatus } from './models/order';
 import { APP_CONFIG } from './config/app-config';
 import { noPastDate } from './validators/no-past-date.validator';
 import { priceNeededToDeliver } from './validators/price-needed-to-deliver.validator';
-
+import { LoadingService } from './services/loading-service';
+import { ErrorService } from './services/error.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -45,6 +46,8 @@ export class App implements OnInit{
 
   readonly config = inject(APP_CONFIG);
   activityLog = inject(ActivityLogService);
+loadingService = inject(LoadingService);
+  errorService = inject(ErrorService);
 
   team: TeamMember[] = this.teamService.getAll();
 
@@ -104,11 +107,11 @@ loadOrders(): void {
   this.cdr.detectChanges();
       },
 
-      error: (error) => {
-        console.error('GET request failed:', error);
-        this.ordersError = 'Unable to load orders. Please try again.';
-        this.cdr.detectChanges();
-      }
+      // error: (error) => {
+      //   console.error('GET request failed:', error);
+      //   this.ordersError = 'Unable to load orders. Please try again.';
+      //   this.cdr.detectChanges();
+      // }
     });
 }
 
@@ -128,10 +131,10 @@ onStatusChange(order: Order, newStatus: OrderStatus): void {
       );
     },
 
-    error: (error) => {
-      console.error('Error updating order:', error);
-      this.ordersError = 'Unable to update order status. Please try again.';
-    }
+    // error: (error) => {
+    //   console.error('Error updating order:', error);
+    //   this.ordersError = 'Unable to update order status. Please try again.';
+    // }
   });
 }
 
@@ -155,10 +158,10 @@ deleteOrder(order: Order): void {
       );
     },
 
-    error: (error) => {
-      console.error('Error deleting order:', error);
-      this.ordersError = 'Unable to delete order. Please try again.';
-    }
+    // error: (error) => {
+    //   console.error('Error deleting order:', error);
+    //   this.ordersError = 'Unable to delete order. Please try again.';
+    // }
   });
 }
 
@@ -383,20 +386,45 @@ onTownChange(event: Event): void {
       });
     },
 
-    error: (error) => {
-  console.error('Error creating order:', error);
+//     error: (error) => {
+//   console.error('Error creating order:', error);
 
-  const validationError = error.error?.errors?.[0];
+//   const validationError = error.error?.errors?.[0];
 
-  if (validationError) {
-    this.orderThankYou = validationError.message;
-  } else {
-    this.orderThankYou =
-      error.error?.message || 'Unable to create order. Please try again.';
-  }
-}
+//   if (validationError) {
+//     this.orderThankYou = validationError.message;
+//   } else {
+//     this.orderThankYou =
+//       error.error?.message || 'Unable to create order. Please try again.';
+//   }
+// }
   });
 }
+
+testErrorInterceptor(): void {
+  const invalidOrder = {
+    accountName: 'Interceptor Test',
+    flavour: 'Vanilla' as const,
+    sizeKg: 1,
+    deliveryDate: '2026-11-20',
+    deliveryTown: 'Southbay' as const,
+    status: 'Delivered' as const
+  };
+
+  this.orderService.add(invalidOrder).subscribe({
+    next: (response) => {
+      console.log('Unexpected success:', response);
+    },
+    error: (error) => {
+      console.log('Original HTTP error:', error);
+      console.log('Friendly message:', error.friendlyMessage);
+      console.log('Backend message:', error.error?.message);
+      console.log('Field validation:', error.error?.errors?.[0]?.message);
+    }
+  });
+}
+
+
 
   getOrderFieldError(fieldName: string): string {
     const control = this.orderForm.get(fieldName);

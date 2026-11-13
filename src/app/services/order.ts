@@ -1,6 +1,6 @@
 
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Order } from '../models/order';
@@ -17,7 +17,6 @@ export class OrderService {
   private apiUrl = `${this.config.apiBaseUrl}/orders`;
 
   getAll(q: string = '', town: string = ''): Observable<Order[]> {
-
     let params = new HttpParams();
 
     if (q.trim()) {
@@ -28,53 +27,26 @@ export class OrderService {
       params = params.set('town', town);
     }
 
-    const headers = new HttpHeaders({
-      Authorization: 'Bearer sweetcrumbs-token'
-    });
-
-    return this.http.get<Order[]>(this.apiUrl, {
-      headers,
-      params
-    });
+    return this.http.get<Order[]>(this.apiUrl, { params });
   }
 
   add(
-  order: Omit<Order, 'id' | 'orderNumber' | 'bigOrder' | 'webReference'>
-): Observable<Order> {
+    order: Omit<Order, 'id' | 'orderNumber' | 'bigOrder' | 'webReference'>
+  ): Observable<Order> {
+    return this.http.post<Order>(this.apiUrl, order);
+  }
 
-  return this.http.post<Order>(this.apiUrl, order, {
-    headers: new HttpHeaders({
-      Authorization: 'Bearer sweetcrumbs-token'
-    })
-  });
-}
+  updateStatus(
+    id: string,
+    status: Order['status']
+  ): Observable<Order> {
+    return this.http.patch<Order>(
+      `${this.apiUrl}/${id}`,
+      { status }
+    );
+  }
 
-updateStatus(
-  id: string,
-  status: Order['status']
-): Observable<Order> {
-
-  return this.http.patch<Order>(
-    `${this.apiUrl}/${id}`,
-    { status },
-    {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer sweetcrumbs-token'
-      })
-    }
-  );
-}
-delete(id: string): Observable<void> {
-
-  return this.http.delete<void>(
-    `${this.apiUrl}/${id}`,
-    {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer sweetcrumbs-token'
-      })
-    }
-  );
-}
-
-
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

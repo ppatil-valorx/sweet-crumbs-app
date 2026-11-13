@@ -1,6 +1,35 @@
 
 <main class="page">
+
+  @if (errorService.errorMessage(); as error) {
+  <div class="global-error-banner" role="alert">
+    <span>{{ error }}</span>
+
+    <button
+      type="button"
+      class="error-close"
+      (click)="errorService.clearError()"
+      aria-label="Close error message"
+    >
+      &times;
+    </button>
+  </div>
+}
+
+
   <h1>Sweet Crumbs Team</h1>
+
+  @if (loadingService.isLoading()) {
+  <div class="global-loading">
+    <span class="loading-spinner"></span>
+    Talking to the server...
+  </div>
+}
+
+<button type="button" (click)="testErrorInterceptor()">
+  Test Error Interceptor
+</button>
+
 
   <p>Selected: {{ selectedMember?.name ?? 'None' }}</p>
 
@@ -115,12 +144,12 @@
   }
 
   <!-- Error state -->
-  @if (ordersError) {
+  <!-- @if (ordersError) {
     <p class="error-message">{{ ordersError }}</p>
-  }
+  } -->
 
   <!-- Orders table -->
-  @if (!loadingOrders && !ordersError) {
+  @if (!loadingOrders ) {
     <p>DEBUG: {{ orders.length }} orders loaded</p>
     <div class="orders-table-wrapper">
       <table class="orders-table">
