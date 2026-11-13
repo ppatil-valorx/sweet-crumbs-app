@@ -1,58 +1,33 @@
+<div class="team-card" [class.selected]="isSelected" (click)="selectCard()">
+  <h2 class="name">{{ person.name }}</h2>
+  <span class="job-badge">{{ person.job }}</span>
 
-<app-card-shell
-  [highlightColor]="person.job === 'Customer Support' ? '#d9f0ff' : '#fff3cd'"
-  (click)="selectCard()"
->
-  <div card-header>
-    <h2 class="name">{{ person.name }}</h2>
+  <p><strong>Job:</strong> {{ person.job }}</p>
+  <p><strong>Covers:</strong> {{ person.covers }}</p>
 
-    @switch (person.job) {
-      @case ('Founder and Sales Head') {
-        <span class="job-badge">Founder</span>
-      }
-      @case ('Sales Rep') {
-        <span class="job-badge">Sales</span>
-      }
-      @case ('Customer Support') {
-        <span class="job-badge">Support</span>
-      }
-      @default {
-        <span class="job-badge">Team</span>
-      }
-    }
+  <div class="member-details">
+    <p>
+  <strong>Joined Date Test::</strong>
+  {{ person.joinedOn | date }}
+</p>
+
+<p>
+  <strong>Monthly bonus:</strong>
+  {{ person.monthlyBonus | currency:'INR':'symbol':'1.2-2':'en-IN' }}
+</p>
+ 
+<p>
+  <strong>Target achieved:</strong>
+  {{ person.targetAchieved | percent:'1.0-0' }}
+</p>
+
+<p>
+  <strong>Bio:</strong>
+  {{ person.bio }}
+</p>
   </div>
 
-  <div card-body>
-    <ng-template #detailRow let-label="label" let-value="value">
-      <p><strong>{{ label }}:</strong> {{ value }}</p>
-    </ng-template>
-
-    <ng-container
-      [ngTemplateOutlet]="detailRow"
-      [ngTemplateOutletContext]="{
-        label: 'Job',
-        value: person.job
-      }"
-    ></ng-container>
-
-    <ng-container
-      [ngTemplateOutlet]="detailRow"
-      [ngTemplateOutletContext]="{
-        label: 'Covers',
-        value: person.covers
-      }"
-    ></ng-container>
-
-    @if (isSelected) {
-      <p class="selected-message">Currently selected</p>
-    }
-
-    <p>Clicks: {{ clicks.count }}</p>
-  </div>
-
-  <div card-footer>
-    <button type="button" (click)="markFavorite($event)">
-      {{ isFavorite ? 'Favorited' : 'Mark as favorite' }}
-    </button>
-  </div>
-</app-card-shell>
+  <button type="button" (click)="markFavorite($event)">
+    {{ isFavorite ? 'Favorited' : 'Mark as favorite' }}
+  </button>
+</div>

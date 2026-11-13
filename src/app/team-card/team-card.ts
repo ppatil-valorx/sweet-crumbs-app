@@ -9,18 +9,17 @@ import {
   SimpleChanges,
   inject,
   ChangeDetectionStrategy,
-  ViewEncapsulation
+  ViewEncapsulation,
+  Pipe
 } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
 import { ActivityLogService } from '../services/activity-log';
 import { CardClicksService } from '../services/card-clicks';
 import { TeamMember } from '../team-member';
-import { CardShell } from '../card-shell/card-shell';
-
+import { DatePipe, CurrencyPipe, PercentPipe } from '@angular/common';
 @Component({
   selector: 'app-team-card',
   standalone: true,
-  imports: [CardShell, NgTemplateOutlet],
+  imports: [DatePipe, CurrencyPipe, PercentPipe],
   templateUrl: './team-card.html',
   styleUrl: './team-card.scss',
   providers: [CardClicksService],
