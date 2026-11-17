@@ -1,0 +1,229 @@
+
+<main class="page">
+
+  <section class="orders-section">
+
+    <div class="orders-header">
+
+      <div>
+        <p class="section-eyebrow">SWEET CRUMBS BAKERY</p>
+
+        <h2>
+          Order Desk
+          <span class="orders-emoji">🧁</span>
+        </h2>
+
+        <p class="orders-subtitle">
+          Every cake, every detail, in one place.
+        </p>
+      </div>
+
+      <div class="orders-count">
+        <span class="count-number">{{ filteredOrders.length }}</span>
+        <span class="count-label">Orders Shown</span>
+      </div>
+
+    </div>
+
+    <!-- Search and order filters -->
+    <div class="orders-filters">
+
+      <div>
+        <label for="order-search">Search customer</label>
+
+        <input
+          id="order-search"
+          type="text"
+          placeholder="Search by customer name..."
+          [value]="searchTerm"
+          (input)="onOrderSearch($event)"
+        />
+      </div>
+
+      <div>
+        <label for="status-filter">Filter by status</label>
+
+        <select
+          id="status-filter"
+          [value]="statusFilter"
+          (change)="onStatusFilterChange($event)"
+        >
+          <option value="">All statuses</option>
+          @for (status of statuses; track status) {
+            <option [value]="status">{{ status }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label for="town-filter">Filter by town</label>
+
+        <select
+          id="town-filter"
+          [value]="townFilter"
+          (change)="onTownFilterChange($event)"
+        >
+          <option value="">All towns</option>
+          @for (town of towns; track town) {
+            <option [value]="town">{{ town }}</option>
+          }
+        </select>
+      </div>
+
+      <button type="button" (click)="clearFilters()">
+        Clear filters
+      </button>
+
+    </div>
+
+    <!-- Loading state -->
+    @if (loadingOrders) {
+      <p class="loading-message">Loading orders...</p>
+    }
+
+    <!-- Error state -->
+    @if (ordersError) {
+      <p class="error-message">{{ ordersError }}</p>
+    }
+
+    <!-- Orders table -->
+    @if (!loadingOrders) {
+
+      <div class="orders-table-wrapper">
+
+        <table class="orders-table">
+
+          <thead>
+            <tr>
+              <th>ORDER</th>
+              <th>CUSTOMER</th>
+              <th>FLAVOUR</th>
+              <th>SIZE</th>
+              <th>DELIVERY DATE</th>
+              <th>TOWN</th>
+              <th>STATUS</th>
+              <th class="price-column">PRICE</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @for (order of filteredOrders; track order.id) {
+
+              <tr [class.big-order-row]="order.bigOrder">
+
+                <td>
+                  <a
+                    class="order-number"
+                    [routerLink]="['/orders', order.orderNumber]"
+                  >
+                    {{ order.orderNumber }}
+                  </a>
+                </td>
+
+                <td>
+                  <span class="customer-name">
+                    {{ order.accountName }}
+                  </span>
+
+                  @if (order.bigOrder) {
+                    <span class="big-order-badge">
+                      ★ BIG ORDER
+                    </span>
+                  }
+                </td>
+
+                <td>
+                  <span class="flavour-name">
+                    {{ order.flavour }}
+                  </span>
+                </td>
+
+                <td>
+                  <span class="size-value">
+                    {{ order.sizeKg }} kg
+                  </span>
+                </td>
+
+                <td>
+                  <span class="delivery-date">
+                    {{ order.deliveryDate }}
+                  </span>
+                </td>
+
+                <td>
+                  <span class="town-label">
+                    {{ order.deliveryTown }}
+                  </span>
+                </td>
+
+                <td>
+                  <select
+                    [ngModel]="order.status"
+                    [ngModelOptions]="{ standalone: true }"
+                    (ngModelChange)="onStatusChange(order, $event)"
+                  >
+                    @for (status of statuses; track status) {
+                      <option [ngValue]="status">
+                        {{ status }}
+                      </option>
+                    }
+                  </select>
+                </td>
+
+                <td class="price-column">
+
+                  @if (order.price != null) {
+                    <span class="price-value">
+                      ₹{{ order.price.toLocaleString('en-IN') }}
+                    </span>
+                  } @else {
+                    <span class="price-pending">Not set</span>
+                  }
+
+                </td>
+
+                <td>
+                  <button
+                    type="button"
+                    (click)="deleteOrder(order)"
+                  >
+                    Delete
+                  </button>
+                </td>
+
+              </tr>
+
+            } @empty {
+
+              <tr>
+                <td colspan="9" class="empty-orders">
+
+                  <span class="empty-icon">🍰</span>
+
+                  <p>No orders found</p>
+
+                  <span>Try changing your search or filters.</span>
+
+                </td>
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+    <div class="orders-footer">
+      <span>🍰 Freshly organised, just like our cakes.</span>
+      <span>Showing {{ filteredOrders.length }} orders</span>
+    </div>
+
+  </section>
+
+</main>
