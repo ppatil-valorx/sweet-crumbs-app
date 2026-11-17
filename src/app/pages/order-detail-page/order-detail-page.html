@@ -1,0 +1,36 @@
+<main class="page">
+  <section class="order-detail">
+    <a class="back-link" routerLink="/orders">← Back to Orders</a>
+
+    <header class="detail-header">
+      <p class="eyebrow">ORDER DETAILS</p>
+      <h1>{{ order.orderNumber }}</h1>
+      <p class="customer-name">Customer: {{ order.accountName }}</p>
+    </header>
+
+    <nav class="order-tabs" aria-label="Order details">
+      <a
+        [routerLink]="['bake']"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        What to bake
+      </a>
+      <a
+        [routerLink]="['delivery']"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Delivery
+      </a>
+    </nav>
+
+    <router-outlet />
+
+    @if (nextOrderNumber) {
+      <a class="next-link" [routerLink]="['/orders', nextOrderNumber]">
+        Next order: {{ nextOrderNumber }} →
+      </a>
+    }
+  </section>
+</main>

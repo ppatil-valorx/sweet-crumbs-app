@@ -22,7 +22,7 @@ export interface Order {
   deliveryDate: string;
   deliveryTown: Town;
   status: OrderStatus;
-  price?: number;
+  price?: number | null;
   bigOrder: boolean;
-  webReference?: string;
+  webReference?: string | null;
 }

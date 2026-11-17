@@ -1,0 +1,129 @@
+
+<main class="page">
+
+  <section class="enquiry-section">
+
+    <h2>Customer Enquiry</h2>
+
+    <p>Have a question? Send us a message.</p>
+
+    <form
+      #enquiryForm="ngForm"
+      (ngSubmit)="submitEnquiry(enquiryForm)"
+    >
+
+      <!-- Name -->
+      <div class="form-field">
+
+        <label for="enquiryName">Name</label>
+
+        <input
+          id="enquiryName"
+          type="text"
+          name="name"
+          [(ngModel)]="enquiry.name"
+          #nameField="ngModel"
+          required
+          minlength="3"
+        />
+
+        @if (nameField.touched && nameField.invalid) {
+          <p class="field-error">
+
+            @if (nameField.errors?.['required']) {
+              Name is required.
+            }
+
+            @if (nameField.errors?.['minlength']) {
+              Name must contain at least 3 characters.
+            }
+
+          </p>
+        }
+
+      </div>
+
+      <!-- Email -->
+      <div class="form-field">
+
+        <label for="enquiryEmail">Email</label>
+
+        <input
+          id="enquiryEmail"
+          type="email"
+          name="email"
+          [(ngModel)]="enquiry.email"
+          #emailField="ngModel"
+          required
+          email
+        />
+
+        @if (emailField.touched && emailField.invalid) {
+          <p class="field-error">
+
+            @if (emailField.errors?.['required']) {
+              Email is required.
+            }
+
+            @if (emailField.errors?.['email']) {
+              Please enter a valid email address.
+            }
+
+          </p>
+        }
+
+      </div>
+
+      <!-- Message -->
+      <div class="form-field">
+
+        <label for="enquiryMessage">Message</label>
+
+        <textarea
+          id="enquiryMessage"
+          name="message"
+          [(ngModel)]="enquiry.message"
+          #messageField="ngModel"
+          required
+          maxlength="200"
+          rows="4"
+        ></textarea>
+
+        <p class="character-count">
+          {{ enquiry.message.length }}/200 characters
+        </p>
+
+        @if (messageField.touched && messageField.invalid) {
+          <p class="field-error">
+
+            @if (messageField.errors?.['required']) {
+              Message is required.
+            }
+
+            @if (messageField.errors?.['maxlength']) {
+              Message cannot exceed 200 characters.
+            }
+
+          </p>
+        }
+
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="enquiryForm.invalid"
+      >
+        Send
+      </button>
+
+    </form>
+
+    @if (enquiryThankYou) {
+      <p class="success-message">
+        Thank you! Your enquiry has been received.
+      </p>
+    }
+
+  </section>
+
+</main>

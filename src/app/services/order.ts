@@ -1,7 +1,7 @@
 
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { delay, map, Observable } from 'rxjs';
 
 import { Order } from '../models/order';
 import { APP_CONFIG } from '../config/app-config';
@@ -28,6 +28,16 @@ export class OrderService {
     }
 
     return this.http.get<Order[]>(this.apiUrl, { params });
+  }
+
+  getByNumber(orderNumber: string): Observable<Order | undefined> {
+    return this.getAll().pipe(
+      map(orders => orders.find(order => order.orderNumber === orderNumber))
+    );
+  }
+
+  loadByNumber(orderNumber: string): Observable<Order | undefined> {
+    return this.getByNumber(orderNumber).pipe(delay(600));
   }
 
   add(

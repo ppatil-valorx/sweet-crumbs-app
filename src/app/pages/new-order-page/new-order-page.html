@@ -1,0 +1,199 @@
+
+<main class="page">
+
+  <section class="order-form-section">
+
+    <h2>New Order</h2>
+
+    <p>Create a new cake order for a customer.</p>
+
+    <form
+      [formGroup]="orderForm"
+      (ngSubmit)="submitOrder()"
+    >
+
+      <!-- Customer name -->
+      <div class="form-field">
+
+        <label for="accountName">
+          Customer / account name *
+        </label>
+
+        <input
+          id="accountName"
+          type="text"
+          formControlName="accountName"
+          required
+        />
+
+        @if (getOrderFieldError('accountName')) {
+          <p class="field-error">
+            {{ getOrderFieldError('accountName') }}
+          </p>
+        }
+
+      </div>
+
+      <!-- Flavour -->
+      <div class="form-field">
+
+        <label for="flavour">Flavour *</label>
+
+        <select id="flavour" formControlName="flavour">
+
+          @for (flavour of flavours; track flavour) {
+            <option [value]="flavour">
+              {{ flavour }}
+            </option>
+          }
+
+        </select>
+
+        @if (getOrderFieldError('flavour')) {
+          <p class="field-error">
+            {{ getOrderFieldError('flavour') }}
+          </p>
+        }
+
+      </div>
+
+      <!-- Cake size -->
+      <div class="form-field">
+
+        <label for="sizeKg">Size (kg) *</label>
+
+        <input
+          id="sizeKg"
+          type="number"
+          formControlName="sizeKg"
+          [min]="config.minSizeKg"
+          [max]="config.maxSizeKg"
+          step="0.5"
+        />
+
+        @if (getSizeError()) {
+          <p class="field-error">
+            {{ getSizeError() }}
+          </p>
+        }
+
+        @if (isBigOrder) {
+          <p class="big-order-hint">
+            This is a big order. Confirm the details with the customer.
+          </p>
+        }
+
+      </div>
+
+      <!-- Delivery date -->
+      <div class="form-field">
+
+        <label for="deliveryDate">Delivery date *</label>
+
+        <input
+          id="deliveryDate"
+          type="date"
+          formControlName="deliveryDate"
+        />
+
+        @if (
+          orderForm.get('deliveryDate')?.touched &&
+          orderForm.get('deliveryDate')?.hasError('pastDate')
+        ) {
+          <p class="field-error">
+            Delivery date can't be in the past.
+          </p>
+        }
+
+        @if (getOrderFieldError('deliveryDate')) {
+          <p class="field-error">
+            {{ getOrderFieldError('deliveryDate') }}
+          </p>
+        }
+
+      </div>
+
+      <!-- Delivery town -->
+      <div class="form-field">
+
+        <label for="deliveryTown">Delivery town *</label>
+
+        <select
+          id="deliveryTown"
+          formControlName="deliveryTown"
+        >
+
+          @for (town of towns; track town) {
+            <option [value]="town">
+              {{ town }}
+            </option>
+          }
+
+        </select>
+
+        @if (getOrderFieldError('deliveryTown')) {
+          <p class="field-error">
+            {{ getOrderFieldError('deliveryTown') }}
+          </p>
+        }
+
+      </div>
+
+      <!-- Order status -->
+      <div class="form-field">
+
+        <label for="status">Status</label>
+
+        <select id="status" formControlName="status">
+
+          @for (status of statuses; track status) {
+            <option [value]="status">
+              {{ status }}
+            </option>
+          }
+
+        </select>
+
+      </div>
+
+      <!-- Price -->
+      <div class="form-field">
+
+        <label for="price">Price</label>
+
+        <input
+          id="price"
+          type="number"
+          formControlName="price"
+          min="0"
+          step="0.01"
+        />
+
+        @if (
+          (orderForm.get('status')?.touched ||
+           orderForm.get('price')?.touched ||
+           orderForm.touched) &&
+          orderForm.hasError('priceRequired')
+        ) {
+          <p class="field-error">
+            Add the price before marking an order Delivered.
+          </p>
+        }
+
+      </div>
+
+      <button type="submit">
+        Add Order
+      </button>
+
+    </form>
+
+    @if (orderThankYou) {
+      <p class="success-message">
+        {{ orderThankYou }}
+      </p>
+    }
+
+  </section>
+
+</main>

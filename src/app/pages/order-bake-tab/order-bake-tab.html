@@ -1,0 +1,12 @@
+<section class="order-tab-content">
+  <h2>What to bake</h2>
+  <dl class="order-fields">
+    <div><dt>Flavour</dt><dd>{{ order.flavour }}</dd></div>
+    <div><dt>Size</dt><dd>{{ order.sizeKg }} kg</dd></div>
+    <div><dt>Big order</dt><dd>{{ order.bigOrder ? 'Yes' : 'No' }}</dd></div>
+    <div>
+      <dt>Price</dt>
+      <dd>{{ order.price == null ? 'Not set' : ('₹' + order.price.toLocaleString('en-IN')) }}</dd>
+    </div>
+  </dl>
+</section>

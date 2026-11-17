@@ -1,0 +1,31 @@
+.login-card {
+  max-width: 440px;
+  margin: 48px auto;
+  padding: 28px;
+  color: #392c28;
+  background: #fffdfb;
+  border: 1px solid #f0e4dc;
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(94, 54, 37, 0.07);
+}
+
+.login-card h1 {
+  margin-top: 0;
+  color: #492e28;
+}
+
+.login-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.login-actions button {
+  padding: 10px 14px;
+  color: #fff;
+  background: #8b5133;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}

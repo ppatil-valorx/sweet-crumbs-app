@@ -1,0 +1,38 @@
+<main class="page">
+  <section class="reports-section">
+    <p class="section-eyebrow">OWNER REPORTS</p>
+    <h1>Order reports</h1>
+
+    @if (loading) {
+      <p role="status">Loading reports...</p>
+    } @else if (error) {
+      <p class="error-message" role="alert">{{ error }}</p>
+    } @else {
+      <section class="report-card">
+        <h2>Orders by status</h2>
+        <dl>
+          @for (status of statuses; track status) {
+            <div>
+              <dt>{{ status }}</dt>
+              <dd>{{ countByStatus(status) }}</dd>
+            </div>
+          }
+        </dl>
+      </section>
+
+      <section class="report-card">
+        <h2>Order totals</h2>
+        <dl>
+          <div>
+            <dt>Big orders</dt>
+            <dd>{{ bigOrderCount }}</dd>
+          </div>
+          <div>
+            <dt>Total value of priced orders</dt>
+            <dd>₹{{ totalPricedValue.toLocaleString('en-IN') }}</dd>
+          </div>
+        </dl>
+      </section>
+    }
+  </section>
+</main>
