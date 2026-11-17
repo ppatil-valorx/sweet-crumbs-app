@@ -50,3 +50,13 @@ button:hover {
 :host(.app-highlighted) .card-shell {
   background-color: var(--highlight-color, #fff3cd);
 }
+
+.click-count {
+  display: inline-block;
+  padding: 6px 12px;
+  background: #f8e9df;
+  color: #8b5133;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+}
