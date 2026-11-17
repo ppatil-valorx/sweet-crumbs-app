@@ -1,8 +1,76 @@
 
-<main class="page">
+<header class="app-header">
 
-  @if (errorService.errorMessage(); as error) {
+  <div class="app-brand">
+    <span class="brand-icon">🧁</span>
+    <span>Sweet Crumbs</span>
+  </div>
+
+  <nav class="app-nav">
+
+    <a
+      routerLink="/team"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Team
+    </a>
+
+    <a
+      routerLink="/orders"
+      routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Orders
+    </a>
+
+    @if (authService.currentUser()) {
+      <a
+        routerLink="/orders/new"
+        routerLinkActive="active"
+      >
+        New Order
+      </a>
+    }
+
+    <a
+      routerLink="/enquiry"
+      routerLinkActive="active"
+    >
+      Enquiry
+    </a>
+
+    @if (authService.currentUser(); as user) {
+      @if (user.role === 'owner') {
+        <a routerLink="/reports" routerLinkActive="active">
+          Reports
+        </a>
+      }
+      <span class="nav-user">
+        Signed in as {{ user.role === 'staff' ? 'Staff' : 'Owner' }}
+      </span>
+      <button type="button" class="nav-auth-button" (click)="logout()">
+        Logout
+      </button>
+    } @else {
+      <a routerLink="/login" routerLinkActive="active">
+        Login
+      </a>
+    }
+
+  </nav>
+
+</header>
+
+@if (isNavigating()) {
+  <div class="navigation-progress" role="status" aria-label="Loading page"></div>
+}
+
+<!-- Global error message -->
+@if (errorService.errorMessage(); as error) {
+
   <div class="global-error-banner" role="alert">
+
     <span>{{ error }}</span>
 
     <button
@@ -13,474 +81,22 @@
     >
       &times;
     </button>
+
   </div>
+
 }
 
+<!-- Global loading indicator -->
+@if (loadingService.isLoading()) {
 
-  <h1>Sweet Crumbs Team</h1>
-
-  @if (loadingService.isLoading()) {
   <div class="global-loading">
+
     <span class="loading-spinner"></span>
     Talking to the server...
-  </div>
-}
 
-<button type="button" (click)="testErrorInterceptor()">
-  Test Error Interceptor
-</button>
-
-
-  <p>Selected: {{ selectedMember?.name ?? 'None' }}</p>
-
-  @if (favoriteMember) {
-    <p>Favorite: {{ favoriteMember.name }}</p>
-  } @else {
-    <p>Favorite: none yet</p>
-  }
-
-  <div class="actions">
-    <button type="button" (click)="changeName()">Change name</button>
-    <button type="button" (click)="changeJob()">Change job</button>
   </div>
 
-  @if (message) {
-    <p class="error-message">{{ message }}</p>
-  } @else {
-    <ng-container></ng-container>
-  }
-
-  <label for="team-search">Search team members</label>
-  <input
-    id="team-search"
-    type="text"
-    placeholder="Search by name..."
-    [value]="searchTerm"
-    (input)="onSearch($event)"
-  />
-
-  <p>Showing {{ filteredTeam.length }} of {{ team.length }}</p>
-
-  <section class="team-grid">
-    <!-- Track by stable member ID so Angular can reuse existing card elements. -->
-    
-<section class="team-grid">
-  <ng-container *ngIf="filteredTeam.length > 0; else noMatches">
-    <app-team-card
-      *ngFor="let member of filteredTeam; trackBy: trackByMemberId"
-      [person]="member"
-      [isSelected]="selectedId === member.id"
-      [isFavorite]="favoriteId === member.id"
-      (selected)="selectMember($event)"
-      (favorite)="setFavorite($event)"
-    />
-  </ng-container>
-
-  <ng-template #noMatches>
-    <p>No team members match.</p>
-  </ng-template>
-</section>
-
-  </section>
-  <section class="recent-activity">
-  <h2>Recent activity</h2>
-
-  @if (activityLog.messages.length > 0) {
-    <ul>
-      @for (activity of activityLog.messages; track $index) {
-        <li>{{ activity }}</li>
-      }
-    </ul>
-  } @else {
-    <p>No activity yet. Select a card or choose a favorite.</p>
-  }
-</section>
-```html
-
-<section class="orders-section">
-  <div class="orders-header">
-    <div>
-      <p class="section-eyebrow">SWEET CRUMBS BAKERY</p>
-      <h2>Order Desk <span class="orders-emoji">🧁</span></h2>
-      <p class="orders-subtitle">Every cake, every detail, in one place.</p>
-    </div>
-
-    <div class="orders-count">
-      <span class="count-number">{{ orders.length }}</span>
-      <span class="count-label">Total Orders</span>
-    </div>
-  </div>
-
-  <!-- Search and town filters -->
-  <div class="orders-filters">
-    <div>
-      <label for="order-search">Search customer</label>
-      <input
-        id="order-search"
-        type="text"
-        placeholder="Search by customer name..."
-        [value]="searchTerm"
-        (input)="onOrderSearch($event)"
-      />
-    </div>
-
-    <div>
-      <label for="town-filter">Filter by town</label>
-      <select
-        id="town-filter"
-        [value]="townFilter"
-        (change)="onTownChange($event)"
-      >
-        <option value="">All towns</option>
-        <option value="Northfield">Northfield</option>
-        <option value="Southbay">Southbay</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Loading state -->
-  @if (loadingOrders) {
-    <p class="loading-message">Loading orders...</p>
-  }
-
-  <!-- Error state -->
-  <!-- @if (ordersError) {
-    <p class="error-message">{{ ordersError }}</p>
-  } -->
-
-  <!-- Orders table -->
-  @if (!loadingOrders ) {
-    <p>DEBUG: {{ orders.length }} orders loaded</p>
-    <div class="orders-table-wrapper">
-      <table class="orders-table">
-        <thead>
-          <tr>
-            <th>ORDER</th>
-            <th>CUSTOMER</th>
-            <th>FLAVOUR</th>
-            <th>SIZE</th>
-            <th>DELIVERY DATE</th>
-            <th>TOWN</th>
-            <th>STATUS</th>
-            <th class="price-column">PRICE</th>
-            <th>ACTIONS</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          @for (order of orders; track order.id) {
-            <tr [class.big-order-row]="order.bigOrder">
-              <td>
-                <span class="order-number">{{ order.orderNumber }}</span>
-              </td>
-
-              <td>
-                <span class="customer-name">{{ order.accountName }}</span>
-                @if (order.bigOrder) {
-                  <span class="big-order-badge">★ BIG ORDER</span>
-                }
-              </td>
-
-              <td>
-                <span class="flavour-name">{{ order.flavour }}</span>
-              </td>
-
-              <td>
-                <span class="size-value">{{ order.sizeKg }} kg</span>
-              </td>
-
-              <td>
-                <span class="delivery-date">{{ order.deliveryDate }}</span>
-              </td>
-
-              <td>
-                <span class="town-label">{{ order.deliveryTown }}</span>
-              </td>
-
-              <td>
-  <select
-    [ngModel]="order.status"
-    [ngModelOptions]="{ standalone: true }"
-    (ngModelChange)="onStatusChange(order, $event)"
-  >
-    @for (status of statuses; track status) {
-      <option [ngValue]="status">{{ status }}</option>
-    }
-  </select>
-</td>
-
-              <td class="price-column">
-                @if (order.price !== undefined) {
-                  <span class="price-value">
-                    ₹{{ order.price.toLocaleString('en-IN') }}
-                  </span>
-                } @else {
-                  <span class="price-pending">Not set</span>
-                }
-              </td>
-              <td>
-  <button
-    type="button"
-    (click)="deleteOrder(order)"
-  >
-    Delete
-  </button>
-</td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="9" class="empty-orders">
-                <span class="empty-icon">🍰</span>
-                <p>No orders found</p>
-                <span>Try changing your search or town filter.</span>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  }
-
-  <div class="orders-footer">
-    <span>🍰 Freshly organised, just like our cakes.</span>
-    <span>Showing {{ orders.length }} orders</span>
-  </div>
-</section>
-
-
-
-<section class="enquiry-section">
-  <h2>Customer enquiry</h2>
-  <p>Have a question? Send us a message.</p>
-
-  <form #enquiryForm="ngForm" (ngSubmit)="submitEnquiry(enquiryForm)">
-
-    <div class="form-field">
-      <label for="enquiryName">Name</label>
-      <input
-        id="enquiryName"
-        type="text"
-        name="name"
-        [(ngModel)]="enquiry.name"
-        #nameField="ngModel"
-        required
-        minlength="3"
-      />
-
-      @if (nameField.touched && nameField.invalid) {
-        <p class="field-error">
-          @if (nameField.errors?.['required']) {
-            Name is required.
-          }
-          @if (nameField.errors?.['minlength']) {
-            Name must contain at least 3 characters.
-          }
-        </p>
-      }
-    </div>
-
-    <div class="form-field">
-      <label for="enquiryEmail">Email</label>
-      <input
-        id="enquiryEmail"
-        type="email"
-        name="email"
-        [(ngModel)]="enquiry.email"
-        #emailField="ngModel"
-        required
-        email
-      />
-
-      @if (emailField.touched && emailField.invalid) {
-        <p class="field-error">
-          Please enter a valid email address.
-        </p>
-      }
-    </div>
-
-    <div class="form-field">
-      <label for="enquiryMessage">Message</label>
-      <textarea
-        id="enquiryMessage"
-        name="message"
-        [(ngModel)]="enquiry.message"
-        #messageField="ngModel"
-        required
-        maxlength="200"
-        rows="4"
-      ></textarea>
-
-      <p class="character-count">
-        {{ enquiry.message.length }}/200 characters
-      </p>
-
-      @if (messageField.touched && messageField.invalid) {
-        <p class="field-error">
-          @if (messageField.errors?.['required']) {
-            Message is required.
-          }
-          @if (messageField.errors?.['maxlength']) {
-            Message cannot exceed 200 characters.
-          }
-        </p>
-      }
-    </div>
-
-    <button type="submit" [disabled]="enquiryForm.invalid">
-      Send
-    </button>
-  </form>
-
-  @if (enquiryThankYou) {
-    <p class="success-message">
-      Thank you! Your enquiry has been received.
-    </p>
-  }
-</section>
-
-
-<section class="order-form-section">
-  <h2>New order</h2>
-
-  <form [formGroup]="orderForm" (ngSubmit)="submitOrder()">
-    <div class="form-field">
-      <label for="accountName">Customer / account name *</label>
-      <input
-        id="accountName"
-        type="text"
-        formControlName="accountName"
-        required
-      />
-      @if (getOrderFieldError('accountName')) {
-  <p class="field-error">
-    {{ getOrderFieldError('accountName') }}
-  </p>
-}
-    </div>
-
-    <div class="form-field">
-      <label for="flavour">Flavour *</label>
-      <select id="flavour" formControlName="flavour">
-        @for (flavour of flavours; track flavour) {
-          <option [value]="flavour">{{ flavour }}</option>
-        }
-      </select>
-      @if (getOrderFieldError('flavour')) {
-  <p class="field-error">
-    {{ getOrderFieldError('flavour') }}
-  </p>
-}
-    </div>
-
-    <div class="form-field">
-      <label for="sizeKg">Size (kg) *</label>
-      <input
-        id="sizeKg"
-        type="number"
-        formControlName="sizeKg"
-        [min]="config.minSizeKg"
-        [max]="config.maxSizeKg"
-        step="0.5"
-      />
-      @if (getSizeError()) {
-  <p class="field-error">
-    {{ getSizeError() }}
-  </p>
 }
 
-      @if (isBigOrder) {
-        <p class="big-order-hint">
-          This is a big order. Confirm the details with the customer.
-        </p>
-      }
-
-      @if (orderForm.get('sizeKg')?.touched &&
-           orderForm.get('sizeKg')?.invalid) {
-        <p class="field-error">
-          Enter a size between {{ config.minSizeKg }} and
-          {{ config.maxSizeKg }} kg.
-        </p>
-      }
-    </div>
-
-    <div class="form-field">
-      <label for="deliveryDate">Delivery date *</label>
-      <input
-        id="deliveryDate"
-        type="date"
-        formControlName="deliveryDate"
-      />
-      
-@if (orderForm.get('deliveryDate')?.touched &&
-     orderForm.get('deliveryDate')?.hasError('pastDate')) {
-  <p class="field-error">
-    Delivery date can’t be in the past.
-  </p>
-}
-
-      @if (getOrderFieldError('deliveryDate')) {
-  <p class="field-error">
-    {{ getOrderFieldError('deliveryDate') }}
-  </p>
-}
-    </div>
-
-    <div class="form-field">
-      <label for="deliveryTown">Delivery town *</label>
-      <select id="deliveryTown" formControlName="deliveryTown">
-        @for (town of towns; track town) {
-          <option [value]="town">{{ town }}</option>
-        }
-      </select>
-      @if (getOrderFieldError('deliveryTown')) {
-  <p class="field-error">
-    {{ getOrderFieldError('deliveryTown') }}
-  </p>
-}
-    </div>
-
-    <div class="form-field">
-      <label for="status">Status</label>
-      <select id="status" formControlName="status">
-        @for (status of statuses; track status) {
-          <option [value]="status">{{ status }}</option>
-        }
-      </select>
-    </div>
-
-    <div class="form-field">
-      <label for="price">Price</label>
-      <input
-        id="price"
-        type="number"
-        formControlName="price"
-        min="0"
-        step="0.01"
-      />
-      
-
-@if (
-  (orderForm.get('status')?.touched ||
-   orderForm.get('price')?.touched ||
-   orderForm.touched) &&
-  orderForm.hasError('priceRequired')
-) {
-  <p class="field-error">
-    Add the price before marking an order Delivered.
-  </p>
-}
-
-
-    </div>
-
-    <button type="submit">
-  Add order
-</button>
-  </form>
-
-  @if (orderThankYou) {
-    <p class="success-message">{{ orderThankYou }}</p>
-  }
-</section>
-
-</main>
+<!-- Selected page appears here -->
+<router-outlet />

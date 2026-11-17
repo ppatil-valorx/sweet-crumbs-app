@@ -1,5 +1,9 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withRouterConfig
+} from '@angular/router';
 import { routes } from './app.routes';
 import { APP_CONFIG } from './config/app-config';
 //import { provideHttpClient } from '@angular/common/http';
@@ -11,7 +15,12 @@ import { errorInterceptor } from './interceptors/error.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withComponentInputBinding(),
+      // Child tabs inherit the parent orderNumber and resolved order data.
+      withRouterConfig({ paramsInheritanceStrategy: 'always' })
+    ),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideHttpClient(
   withInterceptors([
